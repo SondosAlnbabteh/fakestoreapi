@@ -1,3 +1,10 @@
+
+
+
+
+  
+
+
 fetch("https://fakestoreapi.com/products")
   .then((response) => {
     
@@ -79,53 +86,50 @@ function Cards(image, title, price, description) {
 
 
 /*************************** */
+ 
 
-const mainDiv = document.getElementById("mainDiv");
+// function submitForm(event) {
 
-document.getElementById('submitButton').addEventListener('click', submitForm);
+//   event.preventDefault();
 
-function submitForm(event) {
-
-  event.preventDefault();
-
-  const Title = document.getElementById('Title').value;
-  const description = document.getElementById('description').value;
+//   const Title = document.getElementById('Title').value;
+//   const description = document.getElementById('description').value;
   
-  var newPerson = new CreatObj(Title, description);
-}
+//   var newPerson = new CreatObj(Title, description);
+// }
 
 
-function CreatObj(Title, description) {
+// function CreatObj(Title, description) {
   
-  this.Title = Title;
+//   this.Title = Title;
 
-  this.description = description;
+//   this.description = description;
 
  
 
-}
+// }
 
-function renderCards() {
-const div1 = document.createElement("div");
-div1.setAttribute("class", "col patient-card");
-mainDiv.appendChild(div1);
+// function renderCards() {
+// const div1 = document.createElement("div");
+// div1.setAttribute("class", "col patient-card");
+// mainDiv.appendChild(div1);
 
-const div2 = document.createElement("div");
-div2.setAttribute("class", "card ");
-div1.appendChild(div2);
+// const div2 = document.createElement("div");
+// div2.setAttribute("class", "card ");
+// div1.appendChild(div2);
 
-const div3 = document.createElement("div");
-div3.setAttribute("class", "card-body");
-div2.appendChild(div3);
+// const div3 = document.createElement("div");
+// div3.setAttribute("class", "card-body");
+// div2.appendChild(div3);
 
-const h1card = document.createElement("h1");
-h1card.setAttribute("class", "card-title");
-h1card.innerHTML = "<span class='title'>Title:  </span>" + patient.Title;
-div3.appendChild(h1card);
+// const h1card = document.createElement("h1");
+// h1card.setAttribute("class", "card-title");
+// h1card.innerHTML = "<span class='title'>Title:  </span>" + patient.Title;
+// div3.appendChild(h1card);
 
 
-const h4Date = document.createElement("h4");
-h4Date.setAttribute("class", "card-text");
-h4Date.innerHTML = "<span class='title'>description:  </span>" + patient.description;
-div3.appendChild(h4Date);
-}
+// const h4Date = document.createElement("h4");
+// h4Date.setAttribute("class", "card-text");
+// h4Date.innerHTML = "<span class='title'>description:  </span>" + patient.description;
+// div3.appendChild(h4Date);
+// }

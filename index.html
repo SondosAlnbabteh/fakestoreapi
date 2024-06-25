@@ -7,7 +7,46 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
-</head>
+
+    <style>
+      /* CSS Styling for post */
+      .post {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .post-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .post-description {
+        font-size: 15px;
+      }
+      .delete-button, .edit-button {
+      position: absolute;
+      top: 10px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .delete-button {
+      right: 10px;
+      background-color: #e74c3c;
+    }
+    .edit-button {
+      right: 80px;
+      background-color: #3498db;
+    }
+    </style>
+  </head>
 <body>
     
     <nav class="navbar navbar-expand-lg  bg-light">
@@ -62,9 +101,11 @@
   
               
        
-              <button type="button" class="btn btn-primary mt-3" id="submitButton">Submit</button>
+              <button type="submit" class="btn btn-primary mt-3" id="submit">Submit</button>
           </form>
+         
       </div>
+       <div id="output"></div>
   </div>
   </div>
   
@@ -145,6 +186,132 @@
   </div>
   <!-- Copyright -->
 </footer>
+
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, get, child, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDilZ4OoUQVNemEfgW3s7VivjrDEWey-Ps",
+    authDomain: "creative-tutorial-3e3fe.firebaseapp.com",
+    databaseURL: "https://creative-tutorial-3e3fe-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "creative-tutorial-3e3fe",
+    storageBucket: "creative-tutorial-3e3fe.appspot.com",
+    messagingSenderId: "372442580127",
+    appId: "1:372442580127:web:ce3087c0f71fdb2f59ceaa"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const mainDiv = document.getElementById("mainDiv");
+  const outputDiv = document.getElementById("output");
+
+  document.getElementById('submit').addEventListener('click', function(e){
+    e.preventDefault();
+    const title = document.getElementById("Title").value;
+    const description = document.getElementById("description").value;
+
+    set(ref(db, `user/${title}`), {
+      title: title,
+      description: description
+    }).then(() => {
+      // Update the UI with the new data
+      displayData(title, description);
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
+
+  // Function to display data on the page
+  function displayData(title, description) {
+    const postDiv = document.createElement("div");
+    postDiv.className = "post";
+
+    const postTitle = document.createElement("div");
+    postTitle.className = "post-title";
+    postTitle.innerText = title;
+
+    const postDescription = document.createElement("div");
+    postDescription.className = "post-description";
+    postDescription.innerText = description;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "delete-button";
+    deleteButton.innerText = "Delete";
+    deleteButton.addEventListener('click', function() {
+      deleteData(title);
+      outputDiv.removeChild(postDiv);
+    });
+
+    const editButton = document.createElement("button");
+    editButton.className = "edit-button";
+    editButton.innerText = "Edit";
+    editButton.addEventListener('click', function() {
+      editData(title, description, postDiv);
+    });
+
+    postDiv.appendChild(postTitle);
+    postDiv.appendChild(postDescription);
+    postDiv.appendChild(deleteButton);
+    postDiv.appendChild(editButton);
+
+    outputDiv.appendChild(postDiv);
+  }
+
+  // Function to fetch and display all data from Firebase
+  function fetchAndDisplayAllData() {
+    const dbRef = ref(db, 'user');
+
+    onValue(dbRef, (snapshot) => {
+      outputDiv.innerHTML = ''; // Clear existing data
+      snapshot.forEach((childSnapshot) => {
+        const data = childSnapshot.val();
+        displayData(data.title, data.description);
+      });
+    }, {
+      onlyOnce: true
+    });
+  }
+
+  // Function to delete data from Firebase
+  function deleteData(title) {
+    const dbRef = ref(db, `user/${title}`);
+    remove(dbRef).then(() => {
+      console.log(`${title} has been deleted successfully`);
+    }).catch((error) => {
+      console.error(`Error deleting ${title}:`, error);
+    });
+  }
+
+  // Function to edit data in Firebase
+  function editData(title, oldDescription, postDiv) {
+    const newDescription = prompt("Edit description:", oldDescription);
+    if (newDescription !== null && newDescription !== oldDescription) {
+      const dbRef = ref(db, `user/${title}`);
+      update(dbRef, {
+        description: newDescription
+      }).then(() => {
+        console.log(`${title} has been updated successfully`);
+        postDiv.querySelector(".post-description").innerText = newDescription;
+      }).catch((error) => {
+        console.error(`Error updating ${title}:`, error);
+      });
+    }
+  }
+
+  // Fetch and display all data when the page loads
+  fetchAndDisplayAllData();
+</script>
+
+
+
+
+
 
   <script src="app.js"></script>
 </body>
